@@ -6,6 +6,7 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/Gestion des produits/pom.xml" />
+        <option value="$PROJECT_DIR$/Gestion des produits-spring-boot/pom.xml" />
       </list>
     </option>
   </component>

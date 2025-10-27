@@ -1,0 +1,86 @@
+### local server test endpoints for fournisseurs API
+### get all fournisseurs
+    GET http://localhost:8083/api/v0/fournisseurs
+### get all fournisseurs sorted by nom
+    GET http://localhost:8081/api/v0/fournisseurs/sorted
+### get fournisseur by id
+    GET http://localhost:8081/api/v0/fournisseurs/4
+### get fournisseur by nom
+    GET http://localhost:8081/api/v0/fournisseurs/nom/Alami
+### create new fournisseur
+    POST http://localhost:8081/api/v0/fournisseurs
+Content-Type: application/json
+
+    {
+        "nom": "Alami1",
+        "prenom": "Hassan",
+        "email": "hassan@example.com",
+        "societe": "TechCorp",
+        "adresse": "123 Rue Mohammed V",
+        "contact": "Manager",
+        "telephone": "0612345678",
+        "ville": "Casablanca",
+        "ice": "001234567890123"
+    }
+### delete fournisseur by id
+    DELETE http://localhost:8081/api/v0/fournisseurs/15
+### update fournisseur by id
+    PUT http://localhost:8081/api/v0/fournisseurs/3
+Content-Type: application/json
+
+    {
+        "nom": "AlamiUp",
+        "prenom": "HassanUpdated",
+        "email": "ismail@gmail.com",
+        "societe": "TechCorpUpdated",
+        "adresse": "456 Rue Updated",
+        "contact": "Director",
+        "telephone": "0698765432",
+        "ville": "Rabat",
+        "ice": "009876543210987"
+    }
+###########################################################################################################################################
+###########################################################################################################################################
+
+### docker server test endpoints for fournisseurs API
+### get all fournisseurs
+    GET http://localhost:3000/api/v0/fournisseurs
+### get all fournisseurs sorted by nom
+    GET http://localhost:3000/api/v0/fournisseurs/sorted
+### get fournisseur by id
+    GET http://localhost:3000/api/v0/fournisseurs/4
+### get fournisseur by nom
+    GET http://localhost:3000/api/v0/fournisseurs/nom/Alami
+### create new fournisseur
+    POST http://localhost:3000/api/v0/fournisseurs
+Content-Type: application/json
+
+{
+  "nom": "Alami1",
+  "prenom": "Hassan",
+  "email": "hassan@example.com",
+  "societe": "TechCorp",
+  "adresse": "123 Rue Mohammed V",
+  "contact": "Manager",
+  "telephone": "0612345678",
+  "ville": "Casablanca",
+  "ice": "001234567890123"
+}
+### delete fournisseur by id
+    DELETE http://localhost:3000/api/v0/fournisseurs/15
+### update fournisseur by id
+    PUT http://localhost:8081/api/v0/fournisseurs/3
+Content-Type: application/json
+
+{
+  "nom": "AlamiUp",
+  "prenom": "HassanUpdated",
+  "email": "ismail@gmail.com",
+  "societe": "TechCorpUpdated",
+  "adresse": "456 Rue Updated",
+  "contact": "Director",
+  "telephone": "0698765432",
+  "ville": "Rabat",
+  "ice": "009876543210987"
+}
+

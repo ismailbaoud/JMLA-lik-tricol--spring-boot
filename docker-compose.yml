@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: tricol-postgres
+    environment:
+      POSTGRES_DB: tricol_db
+      POSTGRES_USER: tricol_user
+      POSTGRES_PASSWORD: tricol_pass123
+    ports:
+      - "5442:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    networks:
+      - tricol-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tricol_user -d tricol_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  auth:
+    build: ./Authontification
+    container_name: tricol-auth
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/tricol_db
+      SPRING_DATASOURCE_USERNAME: tricol_user
+      SPRING_DATASOURCE_PASSWORD: tricol_pass123
+      JWT_SECRET: ${JWT_SECRET:-your-secret-key-change-this-in-production}
+      JWT_EXPIRATION: ${JWT_EXPIRATION:-3600000}
+    ports:
+      - "8081:8080"
+    networks:
+      - tricol-network
+    restart: on-failure
+
+  app:
+    build: Gestion-des-Fournisseurs-spring-core
+    container_name: tricol-app-v0.1
+    depends_on:
+      postgres:
+        condition: service_healthy
+      auth:
+        condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/tricol_db
+      SPRING_DATASOURCE_USERNAME: tricol_user
+      SPRING_DATASOURCE_PASSWORD: tricol_pass123
+      AUTH_SERVICE_URL: http://auth:8080
+    ports:
+      - "3000:8080"
+    networks:
+      - tricol-network
+    restart: on-failure
+
+volumes:
+  postgres_data:
+
+networks:
+  tricol-network:
+    driver: bridge

@@ -1,0 +1,22 @@
+
+GET  http://localhost:8081/auth/users
+
+###
+POST  http://localhost:8081/auth/register
+Content-Type: application/json
+
+{
+  "userName": "ismail baoud",
+  "role": "ADMIN",
+  "email": "testadmin1@gmail.com",
+  "password": "password123"
+}
+
+###
+POST http://localhost:8081/auth/login
+Content-Type: application/json
+
+{
+  "email": "testadmin@gmail.com",
+  "password": "password123"
+}

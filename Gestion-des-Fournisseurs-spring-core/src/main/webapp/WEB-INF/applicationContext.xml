@@ -69,13 +69,11 @@
     <jpa:repositories base-package="org.ismail.Tricol.repository"
                       entity-manager-factory-ref="entityManagerFactory"
                       transaction-manager-ref="transactionManager"/>
-
-    <!-- Service déclaré manuellement en XML -->
     <bean id="fournisseurService" class="org.ismail.Tricol.service.FournisseurServiceImp">
         <property name="fournisseurRepository" ref="fournisseurRepository"/>
     </bean>
 
-    <bean id="fournisseurController" class="org.ismail.Tricol.controller.FournisseurController">
+    <bean id="fourniosseurController" class="org.ismail.Tricol.controller.FournisseurController">
         <property name="fournisseurService" ref="fournisseurService"/>
     </bean>
 

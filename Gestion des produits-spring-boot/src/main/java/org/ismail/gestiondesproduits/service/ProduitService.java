@@ -30,7 +30,11 @@ public class ProduitService {
     }
 
     public Produit findById(Long id) {
+        try {
         return produitRepository.findById(id).orElse(null);
+        } catch (Exception e) {
+            throw new RuntimeException("Produit non trouvé");
+        }
     }
 
 }

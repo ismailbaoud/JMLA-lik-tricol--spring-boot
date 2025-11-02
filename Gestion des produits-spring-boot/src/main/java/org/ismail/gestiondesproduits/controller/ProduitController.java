@@ -1,8 +1,9 @@
 package org.ismail.gestiondesproduits.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.ismail.gestiondesproduits.dto.ProduitDTO;
+import org.ismail.gestiondesproduits.mapper.ProduitMapper;
 import org.ismail.gestiondesproduits.model.Produit;
 import org.ismail.gestiondesproduits.service.ProduitService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,17 +18,28 @@ public class ProduitController {
     @Autowired
     public ProduitService produitService;
 
-    @Operation
-    (summary = "Create a new product",
-     description = "This endpoint allows you to create a new product by providing the product details in the request body.")
+    @Autowired
+    public ProduitMapper produitMapper;
+
+//    @Operation
+//    (summary = "Create a new product",
+//     description = "This endpoint allows you to create a new product by providing the product details in the request body.")
     @PostMapping
-    public Produit creat(@RequestBody Produit p) {
-        return produitService.save(p);
+    public Produit creatProduit(@RequestBody ProduitDTO p) {
+        try {
+            System.out.println(p);
+            Produit pr = produitMapper.dtoToEntity(p);
+            return produitService.save(pr);
+        } catch (Exception e) {
+            System.out.println("Erreur lors de la création du produit: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Tag( name = "Find Product by ID", description = "Retrieve a product using its unique ID")
     @GetMapping("/{id}")
-    public Produit findById(Long id) {
+    public Produit findById(@PathVariable("id") Long id) {
         return produitService.findById(id);
     }
 

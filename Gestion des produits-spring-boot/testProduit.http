@@ -1,0 +1,13 @@
+###
+POST http://localhost:8085/api/v1/products
+Content-Type: application/json
+
+{
+    "name": "ProduitTest3m12",
+    "description": "Ceci est un produit de test1",
+    "unitPrice": 9.99,
+    "quantity": 12
+}
+###
+
+GET http://localhost:8085/api/v1/products

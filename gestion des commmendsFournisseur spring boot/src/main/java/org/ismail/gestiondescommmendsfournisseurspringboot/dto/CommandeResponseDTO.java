@@ -1,7 +1,6 @@
 package org.ismail.gestiondescommmendsfournisseurspringboot.dto;
 
 import org.ismail.gestiondescommmendsfournisseurspringboot.Enum.CommendeStatus;
-import org.ismail.gestiondescommmendsfournisseurspringboot.model.CommandeProduit;
 
 import java.util.List;
 
@@ -10,17 +9,17 @@ public class CommandeResponseDTO {
     private Long id;
     private String nomProduit;
     private CommendeStatus status;
-    private Long idFournisseur;
-    private List<CommandeProduit> produits;
+    private FournisseurDTO fournisseur;
+    private List<CommandeProduitDetailDTO> produits;
     private Double totalPrice;
 
     public CommandeResponseDTO() {}
 
-    public CommandeResponseDTO(Long id, String nomProduit, CommendeStatus status, Long idFournisseur, List<CommandeProduit> produits) {
+    public CommandeResponseDTO(Long id, String nomProduit, CommendeStatus status, FournisseurDTO fournisseur, List<CommandeProduitDetailDTO> produits) {
         this.id = id;
         this.nomProduit = nomProduit;
         this.status = status;
-        this.idFournisseur = idFournisseur;
+        this.fournisseur = fournisseur;
         this.produits = produits;
         this.totalPrice = calculateTotalPrice();
     }
@@ -58,19 +57,19 @@ public class CommandeResponseDTO {
         this.status = status;
     }
 
-    public Long getIdFournisseur() {
-        return idFournisseur;
+    public FournisseurDTO getFournisseur() {
+        return fournisseur;
     }
 
-    public void setIdFournisseur(Long idFournisseur) {
-        this.idFournisseur = idFournisseur;
+    public void setFournisseur(FournisseurDTO fournisseur) {
+        this.fournisseur = fournisseur;
     }
 
-    public List<CommandeProduit> getProduits() {
+    public List<CommandeProduitDetailDTO> getProduits() {
         return produits;
     }
 
-    public void setProduits(List<CommandeProduit> produits) {
+    public void setProduits(List<CommandeProduitDetailDTO> produits) {
         this.produits = produits;
         this.totalPrice = calculateTotalPrice();
     }
@@ -83,4 +82,3 @@ public class CommandeResponseDTO {
         this.totalPrice = totalPrice;
     }
 }
-

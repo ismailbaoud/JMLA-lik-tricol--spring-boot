@@ -1,7 +1,7 @@
 package org.ismail.gestiondescommmendsfournisseurspringboot.dto;
 
 public class CommandeProduitDetailDTO {
-    
+
     private Long id;
     private Long commandeId;
     private ProduitDTO produit;
@@ -50,7 +50,9 @@ public class CommandeProduitDetailDTO {
 
     public void setQuantite(Integer quantite) {
         this.quantite = quantite;
-        this.lineTotal = quantite * unitPrice;
+        if (this.unitPrice != null) {
+            this.lineTotal = quantite * unitPrice;
+        }
     }
 
     public Double getUnitPrice() {
@@ -59,7 +61,9 @@ public class CommandeProduitDetailDTO {
 
     public void setUnitPrice(Double unitPrice) {
         this.unitPrice = unitPrice;
-        this.lineTotal = quantite * unitPrice;
+        if (this.quantite != null) {
+            this.lineTotal = quantite * unitPrice;
+        }
     }
 
     public Double getLineTotal() {
@@ -70,4 +74,3 @@ public class CommandeProduitDetailDTO {
         this.lineTotal = lineTotal;
     }
 }
-

@@ -1,6 +1,8 @@
 package org.ismail.gestiondesproduits.dto;
 
+
 public class ProduitDTO {
+    private Long id;
     private String name;
     private double unitPrice;
     private String description;
@@ -8,10 +10,25 @@ public class ProduitDTO {
 
     public ProduitDTO() {}
 
+    public ProduitDTO( Long id , String name, double unitPrice, String description, Integer quantity) {
+        this.id = id;
+        this.name = name;
+        this.unitPrice = unitPrice;
+        this.description = description;
+        this.quantity = quantity;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -39,4 +56,5 @@ public class ProduitDTO {
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
+
 }

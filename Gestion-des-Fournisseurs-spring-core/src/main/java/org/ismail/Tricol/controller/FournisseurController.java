@@ -32,10 +32,6 @@ public class FournisseurController {
         return fournisseurServiceImp.findAllFournisseursOrderByNomAsc();
     }
 
-    @GetMapping("/{id}")
-    public Fournisseur findById(@PathVariable("id") Long id) {
-        return fournisseurServiceImp.findFournisseurById(id).orElseThrow(() -> new IllegalArgumentException("Fournisseur avec l'ID " + id + " non trouvé"));
-    }
 
     @GetMapping("/nom/{nom}")
     public Fournisseur findByNom(@PathVariable("nom") String nom) {
@@ -50,6 +46,11 @@ public class FournisseurController {
     @PutMapping("/{id}")
     public Fournisseur updateFournisseur(@PathVariable("id") Long id, @RequestBody Fournisseur fournisseur) {
         return fournisseurServiceImp.updateFournisseur(id, fournisseur);
+    }
+
+    @GetMapping("/{id}")
+    public Fournisseur findById(@PathVariable("id") Long id) {
+        return fournisseurServiceImp.findFournisseurById(id).orElseThrow(()-> new RuntimeException("Fournisseur not found with id " + id));
     }
 
 

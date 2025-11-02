@@ -33,7 +33,7 @@ public class Fournisseur  {
 
     @NotBlank
     @Column(nullable = false)
-    private String societe;
+    private String societe; 
 
     @NotBlank
     @Column(nullable = false)

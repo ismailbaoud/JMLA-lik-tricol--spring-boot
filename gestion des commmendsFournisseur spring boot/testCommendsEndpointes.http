@@ -1,0 +1,57 @@
+###
+#POST http://localhost:8080/api/v1/commandes
+#Content-Type: Application/json
+#
+#{
+#  "nomProduit": "string12342",
+#
+#  "quantiteProduit": 30,
+#
+#  "status": "EN_ATTENTE",
+#
+#  "idFournisseur": 1,
+#
+#  "idProduit": 202
+#}
+
+###
+
+POST http://localhost:8080/api/v1/commandes/with-products
+Content-Type: Application/json
+
+{
+  "nomProduit": "Commande Multiple Produits 5",
+  "status": "EN_ATTENTE",
+  "idFournisseur": 1,
+  "produits": [
+    {
+      "idProduit": 202,
+      "quantite": 3
+    },
+    {
+      "idProduit": 203,
+      "quantite": 1
+    }
+  ]
+}
+
+###
+
+GET http://localhost:8080/api/v1/commandes
+
+###
+
+GET http://localhost:8080/api/v1/commandes/14
+
+###
+
+DELETE http://localhost:8080/api/v1/commandes/15
+
+###
+
+PATCH http://localhost:8080/api/v1/commandes/14
+Content-Type: Application/json
+
+{
+  "status": "LIVREE"
+}

@@ -4,25 +4,35 @@ import jakarta.persistence.*;
 import org.ismail.gestiondescommmendsfournisseurspringboot.Enum.CommendeStatus;
 
 @Entity
-public class Commandes {
+public class Commande {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private  String nomProduit;
+    private String nomProduit;
 
     private Double prixProduit;
 
     private Integer quantiteProduit;
 
     @Enumerated(EnumType.STRING)
-    private CommendeStatus Status;
+    private CommendeStatus status;
 
-    private String IdProduit;
+    private Long idProduit;
 
-    private String IdFournisseur;
+    private Long idFournisseur;
 
-    public Commandes() {}
+    public Commande() {}
+
+    public Commande(Long id, String nomProduit, Double prixProduit, Integer quantiteProduit, CommendeStatus status, Long idProduit, Long idFournisseur) {
+        this.id = id;
+        this.nomProduit = nomProduit;
+        this.prixProduit = prixProduit;
+        this.quantiteProduit = quantiteProduit;
+        this.status = status;
+        this.idProduit = idProduit;
+        this.idFournisseur = idFournisseur;
+    }
 
     public Long getId() {
         return id;
@@ -57,26 +67,26 @@ public class Commandes {
     }
 
     public CommendeStatus getStatus() {
-        return Status;
+        return status;
     }
 
     public void setStatus(CommendeStatus status) {
-        Status = status;
+        this.status = status;
     }
 
-    public String getIdProduit() {
-        return IdProduit;
+    public Long getIdProduit() {
+        return idProduit;
     }
 
-    public void setIdProduit(String idProduit) {
-        IdProduit = idProduit;
+    public void setIdProduit(Long idProduit) {
+        this.idProduit = idProduit;
     }
 
-    public String getIdFournisseur() {
-        return IdFournisseur;
+    public Long getIdFournisseur() {
+        return idFournisseur;
     }
 
-    public void setIdFournisseur(String idFournisseur) {
-        IdFournisseur = idFournisseur;
+    public void setIdFournisseur(Long idFournisseur) {
+        this.idFournisseur = idFournisseur;
     }
 }

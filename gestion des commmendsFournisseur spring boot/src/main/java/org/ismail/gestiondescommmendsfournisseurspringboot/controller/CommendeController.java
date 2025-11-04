@@ -1,8 +1,9 @@
 package org.ismail.gestiondescommmendsfournisseurspringboot.controller;
 
-import org.ismail.gestiondescommmendsfournisseurspringboot.dto.CommandeResponseDTO;
-import org.ismail.gestiondescommmendsfournisseurspringboot.dto.CreateCommandeRequest;
 import org.ismail.gestiondescommmendsfournisseurspringboot.dto.FournisseurDTO;
+import org.ismail.gestiondescommmendsfournisseurspringboot.dto.ProduitDTO;
+import org.ismail.gestiondescommmendsfournisseurspringboot.dto.UpdateStatusRequest;
+import org.ismail.gestiondescommmendsfournisseurspringboot.model.Commande;
 import org.ismail.gestiondescommmendsfournisseurspringboot.service.CommendeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,46 +21,52 @@ public class CommendeController {
     @Value("${fournisseurs.service.url}")
     private String fournisseursServiceUrl;
 
-    @PostMapping("/with-products")
-    public CommandeResponseDTO creerCommandeAvecProduits(@RequestBody CreateCommandeRequest request) {
+    @Value("${produits.service.url}")
+    private String produitsServiceUrl;
+
+    @PostMapping
+    public Commande creerCommende(@RequestBody Commande c) {
         try {
             RestTemplate restTemplate = new RestTemplate();
             FournisseurDTO fournisseurDTO = restTemplate.getForObject(
-                fournisseursServiceUrl + "/api/v0/fournisseurs/" + request.getIdFournisseur(),
+                fournisseursServiceUrl + "/api/v0/fournisseurs/1", 
                 FournisseurDTO.class
             );
-
-            return commendeServiceImpl.creerCommandeAvecProduits(request, fournisseurDTO);
+            ProduitDTO produitDTO = restTemplate.getForObject(
+                produitsServiceUrl + "/api/v1/products/1", 
+                ProduitDTO.class
+            );
+            System.out.println(produitDTO);
+            return commendeServiceImpl.creerCommende(c , fournisseurDTO , produitDTO ).orElseThrow();
         } catch (Exception e) {
-            System.out.println("Erreur lors de la création de la commande avec produits: " + e.getMessage());
             e.printStackTrace();
-            throw new RuntimeException("Erreur lors de la création de la commande: " + e.getMessage());
+            return null;
         }
     }
 
     @GetMapping("/{id}")
-    public CommandeResponseDTO findById(@PathVariable("id") Long id) {
+    public Commande findById(@RequestParam("id") Long id) {
         return commendeServiceImpl.findById(id);
     }
 
     @GetMapping
-    public List<CommandeResponseDTO> findAll() {
+    public List<Commande> findAll() {
         return commendeServiceImpl.findAll();
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable("id") Long id) {
+    @DeleteMapping
+    public void deleteById(@RequestParam("id") Long id) {
         commendeServiceImpl.deleteById(id);
     }
 
-    @PatchMapping("/{id}")
-    public CommandeResponseDTO updateCansel(@PathVariable("id") Long id,@RequestBody CreateCommandeRequest request) {
-        try {
-            return commendeServiceImpl.updatStatusCommende(id, request.getStatus());
-        } catch (Exception e) {
-            System.out.println("Erreur lors de la mise à jour de la commande: " + e.getMessage());
-            e.printStackTrace();
-            throw new RuntimeException("Erreur lors de la mise à jour de la commande: " + e.getMessage());
-        }
+    @PutMapping
+    public Commande updateCommande(@RequestParam("id") Long id, @RequestBody Commande commandeDetails) {
+        return commendeServiceImpl.updateCommande(id, commandeDetails);
     }
+
+    @PatchMapping("/{id}")
+    public Commande updateCommendeStatus(@PathVariable Long id, @RequestBody UpdateStatusRequest request) {
+        return commendeServiceImpl.updateCommendeStatus(id, request.getStatus());
+    }
+
 }

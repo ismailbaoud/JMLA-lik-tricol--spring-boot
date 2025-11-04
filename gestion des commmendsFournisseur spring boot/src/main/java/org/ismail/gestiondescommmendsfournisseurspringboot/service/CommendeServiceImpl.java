@@ -1,24 +1,20 @@
 package org.ismail.gestiondescommmendsfournisseurspringboot.service;
 
 import org.ismail.gestiondescommmendsfournisseurspringboot.Enum.CommendeStatus;
-import org.ismail.gestiondescommmendsfournisseurspringboot.dto.CommandeProduitDetailDTO;
-import org.ismail.gestiondescommmendsfournisseurspringboot.dto.CommandeResponseDTO;
-import org.ismail.gestiondescommmendsfournisseurspringboot.dto.CreateCommandeRequest;
 import org.ismail.gestiondescommmendsfournisseurspringboot.dto.FournisseurDTO;
 import org.ismail.gestiondescommmendsfournisseurspringboot.dto.ProduitDTO;
-import org.ismail.gestiondescommmendsfournisseurspringboot.dto.ProduitItemDTO;
 import org.ismail.gestiondescommmendsfournisseurspringboot.model.Commande;
 import org.ismail.gestiondescommmendsfournisseurspringboot.model.CommandeProduit;
-import org.ismail.gestiondescommmendsfournisseurspringboot.repository.CommendeRepository;
 import org.ismail.gestiondescommmendsfournisseurspringboot.repository.CommandeProduitRepository;
+import org.ismail.gestiondescommmendsfournisseurspringboot.repository.CommendeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -30,98 +26,34 @@ public class CommendeServiceImpl implements CommendeService {
     @Autowired
     public CommandeProduitRepository commandeProduitRepository;
 
-    @Value("${produits.service.url}")
-    private String produitsServiceUrl;
+    @Value("${mouvements.service.url}")
+    private String mouvementsServiceUrl;
 
     @Override
-    public List<CommandeResponseDTO> findAll() {
-        List<Commande> commandes = commendeRepository.findAll();
-        List<CommandeResponseDTO> responses = new ArrayList<>();
-
-        RestTemplate restTemplate = new RestTemplate();
-
-        for (Commande commande : commandes) {
-            CommandeResponseDTO response = buildCommandeResponse(commande, restTemplate);
-            responses.add(response);
-        }
-
-        return responses;
+    public List<Commande> findAll() {
+        return commendeRepository.findAll();
     }
 
     @Override
-    @Transactional
-    public CommandeResponseDTO creerCommandeAvecProduits(CreateCommandeRequest request, FournisseurDTO fournisseurDTO) {
-        if (fournisseurDTO == null) {
+    public Optional<Commande> creerCommende(Commande commande , FournisseurDTO fournisseurDTO, ProduitDTO produitDTO) {
+        if(produitDTO != null && fournisseurDTO != null) {
+            Double prixTotal = produitDTO.getPrix() * commande.getQuantiteProduit();
+            commande.setIdFournisseur(fournisseurDTO.getId());
+            commande.setIdProduit(produitDTO.getId());
+            commande.setNomProduit(produitDTO.getNom());
+            commande.setPrixProduit(prixTotal);
+        } else if (produitDTO == null) {
+            throw new RuntimeException("Produit non trouvé");
+        } else {
             throw new RuntimeException("Fournisseur non trouvé");
         }
 
-        if (request.getProduits() == null || request.getProduits().isEmpty()) {
-            throw new RuntimeException("La liste des produits ne peut pas être vide");
-        }
-
-        Commande commande = new Commande();
-        commande.setNomProduit(request.getNomProduit());
-        commande.setStatus(request.getStatus());
-        commande.setIdFournisseur(fournisseurDTO.getId());
-
-        Commande savedCommande = commendeRepository.save(commande);
-
-        RestTemplate restTemplate = new RestTemplate();
-        List<CommandeProduitDetailDTO> commandeProduitsDetails = new ArrayList<>();
-
-        for (ProduitItemDTO item : request.getProduits()) {
-            try {
-                ProduitDTO produitDTO = restTemplate.getForObject(
-                    produitsServiceUrl + "/api/v1/products/" + item.getIdProduit(),
-                    ProduitDTO.class
-                );
-
-                if (produitDTO == null) {
-                    throw new RuntimeException("Produit avec ID " + item.getIdProduit() + " non trouvé");
-                }
-
-                CommandeProduit commandeProduit = new CommandeProduit();
-                commandeProduit.setCommandeId(savedCommande.getId());
-                commandeProduit.setProduitId(produitDTO.getId());
-                commandeProduit.setQuantite(item.getQuantite());
-                commandeProduit.setUnitPrice(produitDTO.getUnitPrice());
-
-                CommandeProduit savedCommandeProduit = commandeProduitRepository.save(commandeProduit);
-
-                CommandeProduitDetailDTO detailDTO = new CommandeProduitDetailDTO();
-                detailDTO.setId(savedCommandeProduit.getId());
-                detailDTO.setCommandeId(savedCommandeProduit.getCommandeId());
-                detailDTO.setProduit(produitDTO);
-                detailDTO.setQuantite(savedCommandeProduit.getQuantite());
-                detailDTO.setUnitPrice(savedCommandeProduit.getUnitPrice());
-                detailDTO.setLineTotal(savedCommandeProduit.getLineTotal());
-
-                commandeProduitsDetails.add(detailDTO);
-
-            } catch (Exception e) {
-                throw new RuntimeException("Erreur lors de la récupération du produit " + item.getIdProduit() + ": " + e.getMessage());
-            }
-        }
-
-        CommandeResponseDTO response = new CommandeResponseDTO();
-        response.setId(savedCommande.getId());
-        response.setNomProduit(savedCommande.getNomProduit());
-        response.setStatus(savedCommande.getStatus());
-        response.setFournisseur(fournisseurDTO);
-        response.setProduits(commandeProduitsDetails);
-
-        return response;
+        return Optional.of(commendeRepository.save(commande));
     }
 
     @Override
-    public CommandeResponseDTO findById(Long id) {
-        Commande commande = commendeRepository.findById(id).orElse(null);
-        if (commande == null) {
-            return null;
-        }
-
-        RestTemplate restTemplate = new RestTemplate();
-        return buildCommandeResponse(commande, restTemplate);
+    public Commande findById(Long id) {
+        return commendeRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -130,124 +62,66 @@ public class CommendeServiceImpl implements CommendeService {
     }
 
     @Override
-    @Transactional
-    public CommandeResponseDTO updateCommande(Long id, CreateCommandeRequest commandeDetails, FournisseurDTO fournisseurDTO) {
+    public Commande updateCommande(Long id, Commande commandeDetails) {
         Commande commande = commendeRepository.findById(id).orElse(null);
-        if (commande == null) {
-            return null;
+        if (commande != null) {
+            commande.setNomProduit(commandeDetails.getNomProduit());
+            commande.setPrixProduit(commandeDetails.getPrixProduit());
+            commande.setQuantiteProduit(commandeDetails.getQuantiteProduit());
+            commande.setStatus(commandeDetails.getStatus());
+            commande.setIdProduit(commandeDetails.getIdProduit());
+            commande.setIdFournisseur(commandeDetails.getIdFournisseur());
+            return commendeRepository.save(commande);
         }
-
-        if (fournisseurDTO == null) {
-            throw new RuntimeException("Fournisseur non trouvé");
-        }
-
-        commande.setNomProduit(commandeDetails.getNomProduit());
-        commande.setStatus(commandeDetails.getStatus());
-        commande.setIdFournisseur(fournisseurDTO.getId());
-
-        Commande savedCommande = commendeRepository.save(commande);
-
-        commandeProduitRepository.findByCommandeId(id).forEach(cp -> commandeProduitRepository.deleteById(cp.getId()));
-
-        RestTemplate restTemplate = new RestTemplate();
-        List<CommandeProduitDetailDTO> commandeProduitsDetails = new ArrayList<>();
-
-        for (ProduitItemDTO item : commandeDetails.getProduits()) {
-            try {
-                ProduitDTO produitDTO = restTemplate.getForObject(
-                    produitsServiceUrl + "/api/v1/products/" + item.getIdProduit(),
-                    ProduitDTO.class
-                );
-
-                if (produitDTO == null) {
-                    throw new RuntimeException("Produit avec ID " + item.getIdProduit() + " non trouvé");
-                }
-
-                CommandeProduit commandeProduit = new CommandeProduit();
-                commandeProduit.setCommandeId(savedCommande.getId());
-                commandeProduit.setProduitId(produitDTO.getId());
-                commandeProduit.setQuantite(item.getQuantite());
-                commandeProduit.setUnitPrice(produitDTO.getUnitPrice());
-
-                CommandeProduit savedCommandeProduit = commandeProduitRepository.save(commandeProduit);
-
-                CommandeProduitDetailDTO detailDTO = new CommandeProduitDetailDTO();
-                detailDTO.setId(savedCommandeProduit.getId());
-                detailDTO.setCommandeId(savedCommandeProduit.getCommandeId());
-                detailDTO.setProduit(produitDTO);
-                detailDTO.setQuantite(savedCommandeProduit.getQuantite());
-                detailDTO.setUnitPrice(savedCommandeProduit.getUnitPrice());
-                detailDTO.setLineTotal(savedCommandeProduit.getLineTotal());
-
-                commandeProduitsDetails.add(detailDTO);
-
-            } catch (Exception e) {
-                throw new RuntimeException("Erreur lors de la récupération du produit " + item.getIdProduit() + ": " + e.getMessage());
-            }
-        }
-
-        CommandeResponseDTO response = new CommandeResponseDTO();
-        response.setId(savedCommande.getId());
-        response.setNomProduit(savedCommande.getNomProduit());
-        response.setStatus(savedCommande.getStatus());
-        response.setFournisseur(fournisseurDTO);
-        response.setProduits(commandeProduitsDetails);
-
-        return response;
+        return null;
     }
 
     @Override
-    public CommandeResponseDTO updatStatusCommende(Long id, CommendeStatus status) {
-        return commendeRepository.findById(id).map(commande -> {
-            commande.setStatus(status);
-            Commande updatedCommande = commendeRepository.save(commande);
+    public Commande updateCommendeStatus(Long id, CommendeStatus status) {
+        Commande commande = commendeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Commande non trouvée avec l'id: " + id));
+
+        commande.setStatus(status);
+        Commande savedCommande = commendeRepository.save(commande);
+        if(status == CommendeStatus.LIVREE) {
+            List<CommandeProduit> commandeProduits = commandeProduitRepository.findByCommandeId(id);
+
+            if (commandeProduits.isEmpty()) {
+                System.out.println("Aucun produit trouvé pour la commande ID: " + id);
+                return savedCommande;
+            }
+
             RestTemplate restTemplate = new RestTemplate();
-            return buildCommandeResponse(updatedCommande, restTemplate);
-        }).orElse(null);
-    }
 
-    private CommandeResponseDTO buildCommandeResponse(Commande commande, RestTemplate restTemplate) {
-        FournisseurDTO fournisseurDTO = null;
-        try {
-            fournisseurDTO = restTemplate.getForObject(
-                "http://localhost:8082/api/v0/fournisseurs/" + commande.getIdFournisseur(),
-                FournisseurDTO.class
-            );
-        } catch (Exception e) {
-            System.out.println("Impossible de récupérer le fournisseur: " + e.getMessage());
-        }
+            for (CommandeProduit commandeProduit : commandeProduits) {
+                System.out.println("Produit dans la commande: ID=" + commandeProduit.getProduitId()
+                        + ", Quantité=" + commandeProduit.getQuantite());
 
-        List<CommandeProduit> commandeProduits = commandeProduitRepository.findByCommandeId(commande.getId());
-        List<CommandeProduitDetailDTO> commandeProduitsDetails = new ArrayList<>();
+                Map<String, Object> mouvementData = new HashMap<>();
+                mouvementData.put("produitId", commandeProduit.getProduitId());
+                mouvementData.put("typeMvt", "SORTIE");
+                mouvementData.put("quantite", commandeProduit.getQuantite());
+                mouvementData.put("prixAchat", commandeProduit.getUnitPrice());
+                mouvementData.put("refCommande", id);
 
-        for (CommandeProduit cp : commandeProduits) {
-            try {
-                ProduitDTO produitDTO = restTemplate.getForObject(
-                    produitsServiceUrl + "/api/v1/products/" + cp.getProduitId(),
-                    ProduitDTO.class
-                );
+                try {
+                    restTemplate.postForObject(
+                            mouvementsServiceUrl + "/api/v1/mouvements",
+                            mouvementData,
+                            Object.class
+                    );
 
-                CommandeProduitDetailDTO detailDTO = new CommandeProduitDetailDTO();
-                detailDTO.setId(cp.getId());
-                detailDTO.setCommandeId(cp.getCommandeId());
-                detailDTO.setProduit(produitDTO);
-                detailDTO.setQuantite(cp.getQuantite());
-                detailDTO.setUnitPrice(cp.getUnitPrice());
-                detailDTO.setLineTotal(cp.getLineTotal());
-
-                commandeProduitsDetails.add(detailDTO);
-            } catch (Exception e) {
-                System.out.println("Impossible de récupérer le produit: " + e.getMessage());
+                    System.out.println("Mouvement de stock créé pour le produit ID: " + commandeProduit.getProduitId());
+                } catch (Exception e) {
+                    System.err.println("Erreur lors de l'envoi du mouvement pour le produit ID "
+                            + commandeProduit.getProduitId() + ": " + e.getMessage());
+                    System.err.println("Le service de mouvement de stock n'est pas accessible. "
+                            + "Le statut de la commande a été mis à jour mais le mouvement n'a pas été enregistré.");
+                }
             }
         }
 
-        CommandeResponseDTO response = new CommandeResponseDTO();
-        response.setId(commande.getId());
-        response.setNomProduit(commande.getNomProduit());
-        response.setStatus(commande.getStatus());
-        response.setFournisseur(fournisseurDTO);
-        response.setProduits(commandeProduitsDetails);
-
-        return response;
+        return savedCommande;
     }
+
 }

@@ -4,10 +4,8 @@ COPY pom.xml .
 COPY src ./src
 RUN mvn clean package -DskipTests
 
-FROM tomcat:10.1-jdk17
-ENV SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/tricol_db
-ENV SPRING_DATASOURCE_USERNAME=tricol_user
-ENV SPRING_DATASOURCE_PASSWORD=tricol_pass123
-COPY --from=build /app/target/*.war /usr/local/tomcat/webapps/ROOT.war
+FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
+COPY --from=build /app/target/*.war app.war
 EXPOSE 8080
-CMD ["catalina.sh", "run"]
+ENTRYPOINT ["java", "-jar", "app.war"]

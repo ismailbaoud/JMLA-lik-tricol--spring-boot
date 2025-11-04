@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="002-add-indexes" author="ismail">
+        <comment>Ajout d'index pour améliorer les performances des requêtes</comment>
+
+        <!-- Index sur produit_id pour les recherches fréquentes par produit -->
+        <createIndex indexName="idx_mouvement_stock_produit_id" tableName="mouvement_stock">
+            <column name="produit_id"/>
+        </createIndex>
+
+        <!-- Index sur type_mvt pour filtrer par type de mouvement -->
+        <createIndex indexName="idx_mouvement_stock_type_mvt" tableName="mouvement_stock">
+            <column name="type_mvt"/>
+        </createIndex>
+
+        <!-- Index sur date_mvt pour les tris et recherches chronologiques -->
+        <createIndex indexName="idx_mouvement_stock_date_mvt" tableName="mouvement_stock">
+            <column name="date_mvt"/>
+        </createIndex>
+
+        <!-- Index sur ref_commande pour les recherches par commande -->
+        <createIndex indexName="idx_mouvement_stock_ref_commande" tableName="mouvement_stock">
+            <column name="ref_commande"/>
+        </createIndex>
+
+        <!-- Index composé pour les calculs FIFO/CUMP (produit + date) -->
+        <createIndex indexName="idx_mouvement_stock_produit_date" tableName="mouvement_stock">
+            <column name="produit_id"/>
+            <column name="date_mvt"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex indexName="idx_mouvement_stock_produit_id" tableName="mouvement_stock"/>
+            <dropIndex indexName="idx_mouvement_stock_type_mvt" tableName="mouvement_stock"/>
+            <dropIndex indexName="idx_mouvement_stock_date_mvt" tableName="mouvement_stock"/>
+            <dropIndex indexName="idx_mouvement_stock_ref_commande" tableName="mouvement_stock"/>
+            <dropIndex indexName="idx_mouvement_stock_produit_date" tableName="mouvement_stock"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
+

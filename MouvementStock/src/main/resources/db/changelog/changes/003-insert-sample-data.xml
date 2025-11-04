@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="003-insert-sample-data" author="ismail" context="dev">
+        <comment>Insertion de données de test pour le développement</comment>
+
+        <!-- Mouvements pour le produit 1 -->
+        <insert tableName="mouvement_stock">
+            <column name="produit_id" valueNumeric="1"/>
+            <column name="type_mvt" value="ENTREE"/>
+            <column name="quantite" valueNumeric="100"/>
+            <column name="prix_achat" valueNumeric="10.50"/>
+            <column name="date_mvt" valueDate="2025-01-01T10:00:00"/>
+            <column name="ref_commande" valueNumeric="1001"/>
+        </insert>
+
+        <insert tableName="mouvement_stock">
+            <column name="produit_id" valueNumeric="1"/>
+            <column name="type_mvt" value="SORTIE"/>
+            <column name="quantite" valueNumeric="30"/>
+            <column name="prix_achat" valueNumeric="10.50"/>
+            <column name="date_mvt" valueDate="2025-01-05T14:30:00"/>
+            <column name="ref_commande" valueNumeric="2001"/>
+        </insert>
+
+        <insert tableName="mouvement_stock">
+            <column name="produit_id" valueNumeric="1"/>
+            <column name="type_mvt" value="ENTREE"/>
+            <column name="quantite" valueNumeric="50"/>
+            <column name="prix_achat" valueNumeric="11.00"/>
+            <column name="date_mvt" valueDate="2025-01-10T09:15:00"/>
+            <column name="ref_commande" valueNumeric="1002"/>
+        </insert>
+
+        <!-- Mouvements pour le produit 2 -->
+        <insert tableName="mouvement_stock">
+            <column name="produit_id" valueNumeric="2"/>
+            <column name="type_mvt" value="ENTREE"/>
+            <column name="quantite" valueNumeric="200"/>
+            <column name="prix_achat" valueNumeric="5.75"/>
+            <column name="date_mvt" valueDate="2025-01-02T11:00:00"/>
+            <column name="ref_commande" valueNumeric="1003"/>
+        </insert>
+
+        <insert tableName="mouvement_stock">
+            <column name="produit_id" valueNumeric="2"/>
+            <column name="type_mvt" value="SORTIE"/>
+            <column name="quantite" valueNumeric="80"/>
+            <column name="prix_achat" valueNumeric="5.75"/>
+            <column name="date_mvt" valueDate="2025-01-08T16:45:00"/>
+            <column name="ref_commande" valueNumeric="2002"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="mouvement_stock">
+                <where>ref_commande IN (1001, 1002, 1003, 2001, 2002)</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
+

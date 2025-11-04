@@ -80,16 +80,4 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
-package org.ismail.mouvementstock.exception;
-
-public class MouvementStockNotFoundException extends RuntimeException {
-    
-    public MouvementStockNotFoundException(Long id) {
-        super("Mouvement de stock non trouvé avec l'ID: " + id);
-    }
-    
-    public MouvementStockNotFoundException(String message) {
-        super(message);
-    }
-}
 

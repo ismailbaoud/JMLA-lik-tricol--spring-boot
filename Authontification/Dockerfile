@@ -5,4 +5,3 @@ ENV SPRING_DATASOURCE_PASSWORD=tricol_pass123
 COPY target/*.war /usr/local/tomcat/webapps/ROOT.war
 EXPOSE 8080
 CMD ["catalina.sh", "run"]
-

@@ -12,19 +12,22 @@ public class Produit {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(length = 100)
+    @Column(unique = true)
     private String name;
-
-    @Column(name = "unit_price")
     private double unitPrice;
-
-    @Column(length = 3000)
     private String description;
-
     private Integer quantity;
     
     
     public Produit() {}
+
+    public Produit(Long id, String name, double unitPrice, String description, Integer quantity) {
+        this.id = id;
+        this.name = name;
+        this.unitPrice = unitPrice;
+        this.description = description;
+        this.quantity = quantity;
+    }
 
     public Long getId() {
         return id;

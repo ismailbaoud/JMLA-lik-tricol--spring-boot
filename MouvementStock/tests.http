@@ -1,0 +1,59 @@
+###
+### MouvementStock Microservice - REST API Tests
+### Base URL: http://localhost:8082/api/v1/mouvements
+### Product Service should be running on http://localhost:8085
+### PostgreSQL Database: tricol_db on localhost:5432
+###
+
+### Variables
+@baseUrl = http://localhost:8086/api/v1/mouvements
+@productServiceUrl = http://localhost:8085/api/v1/products
+
+###############################################################################
+### 1. CREATE - Créer un nouveau mouvement de stock (ENTREE)
+###############################################################################
+
+
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+  "produitId": 1,
+  "typeMvt": "ENTREE",
+  "quantite": 100,
+  "prixAchat": 25.50,
+  "refCommande": 12345
+}
+
+###############################################################################
+### 2. READ - Lire les mouvements de stock
+###############################################################################
+
+GET {{baseUrl}}
+Accept: application/json
+
+## Filtrer par produit
+#GET {{baseUrl}}?produitId=1,
+#Accept: application/json
+#
+#### Trier par date décroissante
+#GET {{baseUrl}}?_sort=date_mvt:DESC
+#Accept: application/json
+
+###############################################################################
+### 3. UPDATE - Mettre à jour un mouvement de stock
+###############################################################################
+
+PUT {{baseUrl}}/1
+Content-Type: application/json
+
+{
+  "quantite": 150,
+  "prixAchat": 22.00
+}
+
+###############################################################################
+### 4. DELETE - Supprimer un mouvement de stock
+###############################################################################
+
+DELETE {{baseUrl}}/1

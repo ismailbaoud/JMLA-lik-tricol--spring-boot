@@ -1,18 +1,18 @@
 ### local server test endpoints for fournisseurs API
 ### get all fournisseurs
-    GET http://localhost:8083/api/v0/fournisseurs
+    GET http://localhost:8080/api/v0/fournisseurs
 ### get all fournisseurs sorted by nom
-    GET http://localhost:8081/api/v0/fournisseurs/sorted
+    GET http://localhost:8080/api/v0/fournisseurs/sorted
 ### get fournisseur by id
-    GET http://localhost:8081/api/v0/fournisseurs/4
+    GET http://localhost:8080/api/v0/fournisseurs/4
 ### get fournisseur by nom
-    GET http://localhost:8081/api/v0/fournisseurs/nom/Alami
+    GET http://localhost:8080/api/v0/fournisseurs/nom/Alami
 ### create new fournisseur
-    POST http://localhost:8081/api/v0/fournisseurs
+    POST http://localhost:8080/api/v0/fournisseurs
 Content-Type: application/json
 
     {
-        "nom": "Alami1",
+        "nom": "Alami12",
         "prenom": "Hassan",
         "email": "hassan@example.com",
         "societe": "TechCorp",
@@ -23,9 +23,9 @@ Content-Type: application/json
         "ice": "001234567890123"
     }
 ### delete fournisseur by id
-    DELETE http://localhost:8081/api/v0/fournisseurs/15
+    DELETE http://localhost:8080/api/v0/fournisseurs/15
 ### update fournisseur by id
-    PUT http://localhost:8081/api/v0/fournisseurs/3
+    PUT http://localhost:8080/api/v0/fournisseurs/3
 Content-Type: application/json
 
     {
@@ -44,15 +44,15 @@ Content-Type: application/json
 
 ### docker server test endpoints for fournisseurs API
 ### get all fournisseurs
-    GET http://localhost:3000/api/v0/fournisseurs
+    GET http://localhost:8082/api/v0/fournisseurs
 ### get all fournisseurs sorted by nom
-    GET http://localhost:3000/api/v0/fournisseurs/sorted
+    GET http://localhost:8082/api/v0/fournisseurs/sorted
 ### get fournisseur by id
-    GET http://localhost:3000/api/v0/fournisseurs/4
+    GET http://localhost:8082/api/v0/fournisseurs/4
 ### get fournisseur by nom
-    GET http://localhost:3000/api/v0/fournisseurs/nom/Alami
+    GET http://localhost:8082/api/v0/fournisseurs/nom/Alami
 ### create new fournisseur
-    POST http://localhost:3000/api/v0/fournisseurs
+    POST http://localhost:8082/api/v0/fournisseurs
 Content-Type: application/json
 
 {
@@ -67,9 +67,9 @@ Content-Type: application/json
   "ice": "001234567890123"
 }
 ### delete fournisseur by id
-    DELETE http://localhost:3000/api/v0/fournisseurs/15
+    DELETE http://localhost:8082/api/v0/fournisseurs/15
 ### update fournisseur by id
-    PUT http://localhost:8081/api/v0/fournisseurs/3
+    PUT http://localhost:8082/api/v0/fournisseurs/3
 Content-Type: application/json
 
 {

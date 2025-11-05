@@ -55,9 +55,9 @@ services:
       - tricol-network
     restart: on-failure
 
-  produits:
-    build: ./Gestion des produits-spring-boot
-    container_name: tricol-produits
+  mouvementstock:
+    build: ./MouvementStock
+    container_name: tricol-mouvementstock
     depends_on:
       postgres:
         condition: service_healthy
@@ -65,6 +65,26 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/tricol_db
       SPRING_DATASOURCE_USERNAME: tricol_user
       SPRING_DATASOURCE_PASSWORD: tricol_pass123
+      PRODUITS_SERVICE_URL: http://produits:8080
+    ports:
+      - "8086:8080"
+    networks:
+      - tricol-network
+    restart: on-failure
+
+  produits:
+    build: ./Gestion des produits-spring-boot
+    container_name: tricol-produits
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mouvementstock:
+        condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/tricol_db
+      SPRING_DATASOURCE_USERNAME: tricol_user
+      SPRING_DATASOURCE_PASSWORD: tricol_pass123
+      MOUVEMENTSTOCK_SERVICE_URL: http://mouvementstock:8080
     ports:
       - "8085:8080"
     networks:

@@ -9,21 +9,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
-    
-    @ExceptionHandler(ProduitNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleProduitNotFoundException(
-            ProduitNotFoundException ex, WebRequest request) {
-        
-        ErrorResponse errorResponse = new ErrorResponse(
-                HttpStatus.NOT_FOUND.value(),
-                "Produit Not Found",
-                ex.getMessage(),
-                request.getDescription(false).replace("uri=", "")
-        );
-        
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-    }
-    
+
     @ExceptionHandler(InvalidQuantityException.class)
     public ResponseEntity<ErrorResponse> handleInvalidQuantityException(
             InvalidQuantityException ex, WebRequest request) {

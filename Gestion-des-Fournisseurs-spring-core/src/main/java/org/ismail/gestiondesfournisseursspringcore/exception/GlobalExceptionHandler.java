@@ -10,20 +10,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     
-    @ExceptionHandler(FournisseurNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleFournisseurNotFoundException(
-            FournisseurNotFoundException ex, WebRequest request) {
-        
-        ErrorResponse errorResponse = new ErrorResponse(
-                HttpStatus.NOT_FOUND.value(),
-                "Fournisseur Not Found",
-                ex.getMessage(),
-                request.getDescription(false).replace("uri=", "")
-        );
-        
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-    }
-    
     @ExceptionHandler(InvalidFournisseurException.class)
     public ResponseEntity<ErrorResponse> handleInvalidFournisseurException(
             InvalidFournisseurException ex, WebRequest request) {
@@ -66,16 +52,3 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
-package org.ismail.gestiondesfournisseursspringcore.exception;
-
-public class FournisseurNotFoundException extends RuntimeException {
-    
-    public FournisseurNotFoundException(Long id) {
-        super("Fournisseur non trouvé avec l'ID: " + id);
-    }
-    
-    public FournisseurNotFoundException(String message) {
-        super(message);
-    }
-}
-

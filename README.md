@@ -287,4 +287,3 @@ Développé par l'équipe Tricol
 ## 📄 Licence
 
 Propriétaire - Tricol © 2025
-

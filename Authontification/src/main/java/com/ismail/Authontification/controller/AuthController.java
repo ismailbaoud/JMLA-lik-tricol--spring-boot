@@ -5,6 +5,7 @@ import com.ismail.Authontification.dto.LoginDTO;
 import com.ismail.Authontification.dto.UserDTO;
 import com.ismail.Authontification.model.User;
 import com.ismail.Authontification.service.AuthService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -22,6 +23,7 @@ public class AuthController {
         this.authService = authService;
     }
 
+    @Tag(name = "Register User", description = "Create a new user account")
     @PostMapping("/register")
     public ResponseEntity<?> save(@RequestBody User user) {
         try {
@@ -39,6 +41,7 @@ public class AuthController {
         }
     }
 
+    @Tag(name = "Login", description = "Authenticate user and get user details")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDto) {
         try {
@@ -58,6 +61,7 @@ public class AuthController {
     }
 
 
+    @Tag(name = "Get All Users", description = "Retrieve a list of all registered users")
     @GetMapping("/users")
     public ResponseEntity<?> getAllUsers() {
         try {

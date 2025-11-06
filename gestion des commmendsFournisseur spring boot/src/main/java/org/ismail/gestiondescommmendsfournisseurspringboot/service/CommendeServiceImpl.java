@@ -8,6 +8,8 @@ import org.ismail.gestiondescommmendsfournisseurspringboot.repository.CommandePr
 import org.ismail.gestiondescommmendsfournisseurspringboot.repository.CommendeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -37,11 +39,9 @@ public class CommendeServiceImpl implements CommendeService {
     private String produitsServiceUrl;
 
     @Override
-    public List<CommandeResponseDTO> findAll() {
-        List<Commande> commandes = commendeRepository.findAll();
-        return commandes.stream()
-                .map(this::convertToResponseDTO)
-                .collect(Collectors.toList());
+    public Page<CommandeResponseDTO> findAll(Pageable pageable) {
+        Page<Commande> commandes = commendeRepository.findAll(pageable);
+        return commandes.map(this::convertToResponseDTO);
     }
 
     @Override

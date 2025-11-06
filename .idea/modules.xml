@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="ProjectModuleManager">
-    <modules>
-      <module fileurl="file://$PROJECT_DIR$/Gestion des produits/GestionDesProduits.iml" filepath="$PROJECT_DIR$/Gestion des produits/GestionDesProduits.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/tricol.iml" filepath="$PROJECT_DIR$/.idea/tricol.iml" />
-    </modules>
-  </component>
-</project>

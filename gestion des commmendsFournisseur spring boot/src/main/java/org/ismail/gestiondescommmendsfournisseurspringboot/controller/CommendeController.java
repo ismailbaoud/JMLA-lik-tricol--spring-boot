@@ -1,5 +1,6 @@
 package org.ismail.gestiondescommmendsfournisseurspringboot.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.ismail.gestiondescommmendsfournisseurspringboot.dto.CommandeRequestDTO;
 import org.ismail.gestiondescommmendsfournisseurspringboot.dto.CommandeResponseDTO;
 import org.ismail.gestiondescommmendsfournisseurspringboot.dto.UpdateStatusRequest;
@@ -17,26 +18,31 @@ public class CommendeController {
     @Autowired
     public CommendeServiceImpl commendeServiceImpl;
 
+    @Tag(name = "Create Commande", description = "Create a new order with multiple products using CUMP pricing method")
     @PostMapping
     public CommandeResponseDTO creerCommende(@RequestBody CommandeRequestDTO commandeRequest) {
         return commendeServiceImpl.creerCommende(commandeRequest);
     }
 
+    @Tag(name = "Find Commande by ID", description = "Retrieve an order using its unique ID with full product details")
     @GetMapping("/{id}")
     public CommandeResponseDTO findById(@PathVariable Long id) {
         return commendeServiceImpl.findById(id);
     }
 
+    @Tag(name = "Get All Commandes", description = "Retrieve a paginated list of all orders")
     @GetMapping
     public Page<CommandeResponseDTO> findAll(Pageable pageable) {
         return commendeServiceImpl.findAll(pageable);
     }
 
+    @Tag(name = "Delete Commande", description = "Delete an order by ID")
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable Long id) {
         commendeServiceImpl.deleteById(id);
     }
 
+    @Tag(name = "Update Commande Status", description = "Update order status (PENDING, CONFIRMED, DELIVERED, CANCELLED)")
     @PatchMapping("/{id}/status")
     public CommandeResponseDTO updateCommendeStatus(@PathVariable Long id, @RequestBody UpdateStatusRequest request) {
         return commendeServiceImpl.updateCommendeStatus(id, request.getStatus());

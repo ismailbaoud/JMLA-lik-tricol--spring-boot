@@ -32,20 +32,6 @@ docker-compose logs -f
 docker-compose ps
 ```
 
-### Accès aux services
-- Auth: http://localhost:8081
-- Produits: http://localhost:8080
-- Fournisseurs: http://localhost:8082
-- Commandes: http://localhost:8083
-- MouvementStock: http://localhost:8084
-
-## 📊 Base de Données
-
-```yaml
-Database: tricol_db
-User: tricol_user
-Password: tricol_pass123
-Port: 5442
 ```
 
 ## 🔧 API Endpoints Principaux

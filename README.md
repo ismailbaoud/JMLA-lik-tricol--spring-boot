@@ -201,18 +201,6 @@ docker-compose down -v
 ## 🧑‍💻 Author
 
 **Tricol Systems © 2025**  
-Developed by [Your Name]  
+Developed by ismail baoud  
 > Focused on building scalable, modular supply management systems using Spring Boot and Docker.
 
----
-
-## 🖼️ Suggested Places for Your 4 Images
-
-| Screenshot Type | Suggested Section | Example Filename |
-|------------------|------------------|------------------|
-| Project UI / API Screenshot #1 | Under “Example Request” | `screenshots/project-ui-1.png` |
-| Project UI / API Screenshot #2 | Under “Example Request” | `screenshots/project-ui-2.png` |
-| Class Diagram | Under “Architecture Diagram” | `screenshots/class-diagram.png` |
-| Docker Compose ps Result | Under “How to Run” | `screenshots/docker-compose-ps.png` |
-
----

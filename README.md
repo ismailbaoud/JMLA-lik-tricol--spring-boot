@@ -1,109 +1,136 @@
-# 🏭 Système Tricol - Gestion des Approvisionnements
+# 🏭 JMLA-LIK - Tricol Supply Management System
 
-Système de microservices pour la gestion complète des approvisionnements : produits, fournisseurs, commandes, stocks et authentification.
+A **microservices-based system** for complete supply chain management — including products, suppliers, orders, and stock movements — built with **Spring Boot**, **PostgreSQL**, and **Docker**.
 
-## 🎯 Microservices
+---
+
+## 🚀 Overview
+
+Tricol is a B2B system designed for **primary suppliers (wholesalers)** who manage product catalogs, supplier orders, and automatic stock updates using the **CUMP (Weighted Average Cost)** method.
+
+Each service is independent and communicates via REST APIs.
+
+---
+
+## 🧩 Microservices Architecture
 
 | Service | Port | Description |
-|---------|------|-------------|
-| **PostgreSQL** | 5442 | Base de données partagée |
-| **Authentification** | 8081 | Gestion des utilisateurs et JWT |
-| **Produits** | 8080 | Gestion du catalogue produits |
-| **Fournisseurs** | 8082 | Gestion des fournisseurs |
-| **Commandes** | 8083 | Gestion des commandes fournisseurs avec **calcul CUMP** |
-| **Mouvement Stock** | 8084 | Suivi des entrées/sorties de stock |
+|----------|------|-------------|
+| **PostgreSQL** | 5442 | Shared database |
+| **Products Service** | 8080 | Manages product catalog and stock |
+| **Suppliers Service** | 8082 | Manages supplier information |
+| **Orders Service** | 8083 | Manages supplier orders and CUMP calculation |
+| **Stock Movement Service** | 8084 | Tracks stock entries, exits, and adjustments |
 
-## 🚀 Démarrage Rapide
+> ⚠️ *Auth service temporarily excluded from this version.*
 
-### Prérequis
+---
+
+## 🏗️ Architecture Diagram
+
+<img width="1452" height="619" alt="Capture d’écran du 2025-11-09 16-15-48" src="https://github.com/user-attachments/assets/7c3554d7-689f-4e27-a25e-43ef6852cb4e" />
+
+  
+---
+
+## 🧱 Technical Stack
+
+- **Backend Framework:** Spring Boot 3.x (Java 17)
+- **Database:** PostgreSQL 15
+- **ORM:** Spring Data JPA + Hibernate
+- **API Communication:** REST (WebClient)
+- **Containerization:** Docker & Docker Compose
+- **Architecture Style:** Microservices (fully decoupled)
+
+---
+
+## ⚙️ How to Run
+
+### Prerequisites
 - Docker 20.10+
 - Docker Compose 2.0+
 
-### Lancer l'application
-
+### Start the system
 ```bash
-# Démarrer tous les services
+# Start all services
 docker-compose up -d
 
-# Voir les logs
+# Check logs
 docker-compose logs -f
 
-# Vérifier l'état
+# List running containers
 docker-compose ps
 ```
 
-```
+<img width="1493" height="203" alt="image" src="https://github.com/user-attachments/assets/60032e21-bcfb-4038-8a4a-7f4882278145" />
 
-## 🔧 API Endpoints Principaux
+  
+---
 
-### Authentification (8081)
+## 🌐 API Endpoints
+
+### Products Service (8080)
 ```http
-POST /auth/register    # Créer un compte
-POST /auth/login       # Se connecter (JWT)
-GET  /auth/users       # Liste utilisateurs
+GET    /produits                 # List all products
+POST   /produits                 # Create a product
+GET    /produits/{id}            # Get product details
+PUT    /produits/{id}            # Update a product
+DELETE /produits/{id}            # Delete a product
+PATCH  /produits/{id}/reduce-stock # Reduce stock
 ```
 
-### Produits (8080)
+---
+
+### Suppliers Service (8082)
 ```http
-GET    /produits           # Liste
-POST   /produits           # Créer
-GET    /produits/{id}      # Détails
-PUT    /produits/{id}      # Modifier
-DELETE /produits/{id}      # Supprimer
-PATCH  /produits/{id}/reduce-stock  # Réduire stock
+GET    /fournisseurs             # List all suppliers
+POST   /fournisseurs             # Create a supplier
+GET    /fournisseurs/{id}        # Get supplier details
+PUT    /fournisseurs/{id}        # Update a supplier
+DELETE /fournisseurs/{id}        # Delete a supplier
 ```
 
-### Fournisseurs (8082)
+---
+
+### Orders Service (8083)
 ```http
-GET    /fournisseurs       # Liste
-POST   /fournisseurs       # Créer
-GET    /fournisseurs/{id}  # Détails
-PUT    /fournisseurs/{id}  # Modifier
-DELETE /fournisseurs/{id}  # Supprimer
+GET    /api/v1/commandes               # List all orders
+POST   /api/v1/commandes               # Create an order (multi-product)
+GET    /api/v1/commandes/{id}          # Get order details
+PUT    /api/v1/commandes/{id}          # Update order
+DELETE /api/v1/commandes/{id}          # Delete order
+PATCH  /api/v1/commandes/{id}/status   # Update order status
 ```
 
-### Commandes Fournisseurs (8083) ⭐
+**Order Statuses:** `PENDING`, `CONFIRMED`, `DELIVERED`, `CANCELLED`
+
+**Pricing Method:** Automatically computed using **CUMP (Weighted Average Cost)**
+
+---
+
+### Stock Movement Service (8084)
 ```http
-GET    /api/v1/commandes              # Liste toutes les commandes
-POST   /api/v1/commandes              # Créer une commande (multi-produits)
-GET    /api/v1/commandes/{id}         # Détails d'une commande
-PUT    /api/v1/commandes/{id}         # Modifier une commande
-DELETE /api/v1/commandes/{id}         # Supprimer une commande
-PATCH  /api/v1/commandes/{id}/status  # Changer le statut
+GET  /api/mouvements                  # List all movements
+POST /api/mouvements                  # Register a movement
+GET  /api/mouvements/{id}             # Get movement details
+GET  /api/mouvements/produit/{id}     # Get movements by product
 ```
 
-**Statuts de commande** : `PENDING`, `CONFIRMED`, `DELIVERED`, `CANCELLED`
+**Movement Types:** `ENTREE`, `SORTIE`, `AJUSTEMENT`
 
-**Calcul du prix** : Utilise la méthode **CUMP** (Coût Unitaire Moyen Pondéré)
+---
 
-### Mouvement Stock (8084)
-```http
-GET  /api/mouvements              # Liste des mouvements
-POST /api/mouvements              # Enregistrer un mouvement
-GET  /api/mouvements/{id}         # Détails
-GET  /api/mouvements/produit/{id} # Mouvements par produit
-```
+## 💡 Key Features
 
-**Types de mouvement** : `ENTREE`, `SORTIE`, `AJUSTEMENT`
+- 📦 Multi-product order management  
+- 🧮 Automatic **CUMP price calculation**  
+- 🔄 Real-time stock update when an order is delivered  
+- 🧾 Full stock movement traceability  
+- 🧰 Error handling and validation across services  
 
-## 💡 Fonctionnalités Clés
+---
 
-### 📦 Gestion des Commandes Multi-Produits
-- Créer une commande avec plusieurs produits
-- Calcul automatique du montant total avec **méthode CUMP**
-- Validation automatique des fournisseurs et produits
-
-### 🔄 Intégration Automatique Stock
-- Statut `DELIVERED` → Création automatique de mouvements d'entrée
-- Mise à jour automatique des quantités en stock
-- Traçabilité complète des mouvements
-
-### 🛡️ Gestion des Erreurs
-- Exceptions personnalisées par service
-- Messages d'erreur clairs et cohérents
-- Validation des données en entrée
-
-## 📝 Exemple de Création de Commande
+## 🧠 Example Request – Create Order
 
 ```json
 POST http://localhost:8083/api/v1/commandes
@@ -127,57 +154,65 @@ Content-Type: application/json
 }
 ```
 
-## 🛠️ Commandes Utiles
+<img width="1904" height="971" alt="Capture d’écran du 2025-11-09 15-54-35" src="https://github.com/user-attachments/assets/c11c4b5a-416c-4846-b8d8-f169a6d40a71" />
+
+<img width="1905" height="650" alt="Capture d’écran du 2025-11-09 15-55-14" src="https://github.com/user-attachments/assets/1a87c01f-45bf-474e-ab21-2a1076274538" />
+
+---
+
+## 🧰 Useful Commands
 
 ```bash
-# Redémarrer un service
+# Restart a service
 docker-compose restart commandes
 
-# Reconstruire un service
+# Rebuild a service
 docker-compose up -d --build commandes
 
-# Voir les logs d'un service
+# View logs of a service
 docker-compose logs -f commandes
 
-# Arrêter tout
+# Stop all containers
 docker-compose down
 
-# Arrêter et supprimer les données
+# Stop & remove volumes
 docker-compose down -v
 ```
 
-## 🏗️ Architecture Technique
+---
 
-- **Framework** : Spring Boot 3.x / Spring Core 6.x
-- **Base de données** : PostgreSQL 15
-- **ORM** : Spring Data JPA + Hibernate
-- **API** : REST avec WebClient pour communication inter-services
-- **Sécurité** : JWT (service Auth)
-- **Déploiement** : Docker + Docker Compose
+## 🧩 Future Improvements
 
-## 📚 Documentation Complète
+- Add Authentication microservice (JWT)  
+- Implement Role-based Access Control  
+- Add Reporting/Analytics for suppliers and stock trends  
+- Build a minimal frontend dashboard  
 
-- [API Commandes](./gestion%20des%20commmendsFournisseur%20spring%20boot/API_DOCUMENTATION.md)
-- [Guide Docker](./README-DOCKER.md)
-- [Documentation Complète](./README-COMPLETE.md)
+---
 
-## 🐛 Dépannage
+## 📚 Documentation Links
 
-### Services ne démarrent pas
-```bash
-docker-compose logs <service-name>
-docker-compose restart <service-name>
-```
+- [API Orders Documentation](./gestion%20des%20commmendsFournisseur%20spring%20boot/API_DOCUMENTATION.md)
+- [Docker Setup Guide](./README-DOCKER.md)
+- [Full Documentation](./README-COMPLETE.md)
 
-### Erreur de connexion DB
-```bash
-docker-compose down -v
-docker-compose up -d
-```
+---
 
-### Port déjà utilisé
-Modifiez les ports dans `docker-compose.yml`
+## 🧑‍💻 Author
 
-## 📄 Licence
+**Tricol Systems © 2025**  
+Developed by [Your Name]  
+> Focused on building scalable, modular supply management systems using Spring Boot and Docker.
 
-Propriétaire - Tricol © 2025
+---
+
+## 🖼️ Suggested Places for Your 4 Images
+
+| Screenshot Type | Suggested Section | Example Filename |
+|------------------|------------------|------------------|
+| Project UI / API Screenshot #1 | Under “Example Request” | `screenshots/project-ui-1.png` |
+| Project UI / API Screenshot #2 | Under “Example Request” | `screenshots/project-ui-2.png` |
+| Class Diagram | Under “Architecture Diagram” | `screenshots/class-diagram.png` |
+| Docker Compose ps Result | Under “How to Run” | `screenshots/docker-compose-ps.png` |
+
+---

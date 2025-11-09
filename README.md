@@ -194,7 +194,6 @@ docker-compose down -v
 
 - [API Orders Documentation](./gestion%20des%20commmendsFournisseur%20spring%20boot/API_DOCUMENTATION.md)
 - [Docker Setup Guide](./README-DOCKER.md)
-- [Full Documentation](./README-COMPLETE.md)
 
 ---
 

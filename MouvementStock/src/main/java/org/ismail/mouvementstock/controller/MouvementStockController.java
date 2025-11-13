@@ -1,7 +1,7 @@
 package org.ismail.mouvementstock.controller;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
+// import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;import lombok.RequiredArgsConstructor;
 import org.ismail.mouvementstock.dto.MouvementStockRequestDTO;
 import org.ismail.mouvementstock.dto.MouvementStockResponseDTO;
 import org.ismail.mouvementstock.model.TypeMouvement;
@@ -9,6 +9,7 @@ import org.ismail.mouvementstock.service.MouvementStockService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -28,8 +29,8 @@ public class MouvementStockController {
 
     @Tag(name = "Get All Mouvements", description = "Retrieve a list of all stock movements")
     @GetMapping
-    public ResponseEntity<List<MouvementStockResponseDTO>> getAllMouvements() {
-        List<MouvementStockResponseDTO> mouvements = mouvementStockService.getAllMouvements();
+    public ResponseEntity<List<MouvementStockResponseDTO>> getAllMouvements(Pageable pageable) {
+        List<MouvementStockResponseDTO> mouvements = mouvementStockService.getAllMouvements(pageable).getContent();
         return ResponseEntity.ok(mouvements);
     }
 

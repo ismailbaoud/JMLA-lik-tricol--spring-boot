@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class CommendeServiceImpl implements CommendeService {
@@ -32,11 +31,9 @@ public class CommendeServiceImpl implements CommendeService {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Value("${mouvements.service.url}")
-    private String mouvementsServiceUrl;
+    @Value("${mouvements.service.url}") String mouvementsServiceUrl;
 
-    @Value("${produits.service.url}")
-    private String produitsServiceUrl;
+    @Value("${produits.service.url}") String produitsServiceUrl;
 
     @Override
     public Page<CommandeResponseDTO> findAll(Pageable pageable) {
@@ -49,31 +46,22 @@ public class CommendeServiceImpl implements CommendeService {
         Commande commande = new Commande();
         commande.setIdFournisseur(commandeRequest.getIdFournisseur());
         commande.setStatus(CommendeStatus.EN_ATTENTE);
-
         Commande savedCommande = commendeRepository.save(commande);
-
         for (ProduitCommandeDTO produitCmd : commandeRequest.getProduits()) {
             try {
-               ProduitDTO produit = restTemplate.getForObject(
-                    produitsServiceUrl + "/api/v1/products/" + produitCmd.getProduitId(),
-                    ProduitDTO.class
-                );
-
+                ProduitDTO produit = restTemplate.getForObject(produitsServiceUrl + "/api/v1/products/" + produitCmd.getProduitId(), ProduitDTO.class);
                 if (produit != null) {
                     CommandeProduit commandeProduit = new CommandeProduit();
                     commandeProduit.setCommandeId(savedCommande.getId());
                     commandeProduit.setProduitId(produitCmd.getProduitId());
                     commandeProduit.setQuantite(produitCmd.getQuantite());
                     commandeProduit.setUnitPrice(produit.getPrix());
-
                     commandeProduitRepository.save(commandeProduit);
                 }
             } catch (Exception e) {
-                System.err.println("Erreur lors de la récupération du produit ID "
-                    + produitCmd.getProduitId() + ": " + e.getMessage());
+                System.err.println("Erreur lors de la récupération du produit ID " + produitCmd.getProduitId() + ": " + e.getMessage());
             }
         }
-
         return convertToResponseDTO(savedCommande);
     }
 
@@ -164,39 +152,59 @@ public class CommendeServiceImpl implements CommendeService {
         return convertToResponseDTO(savedCommande);
     }
 
+    public Double calculate() {
+        
+        Commande commande = commendeRepository.findById(20L).orElse(null);
+        List<CommandeProduit> commandeProduits = commandeProduitRepository.findByCommandeId(commande.getId());
+        Double sum = 0.0;
+        try {
+            for (CommandeProduit cp : commandeProduits) {
+                ProduitDTO produit = restTemplate.getForObject(
+                    produitsServiceUrl + "/api/v1/products/" + cp.getProduitId(),
+                    ProduitDTO.class
+                    );
+                    sum += produit.getPrix();
+                }
+                
+            }catch(Exception e) {
+                System.out.print("err");
+            }
+            return sum;
+        }
+    
     private CommandeResponseDTO convertToResponseDTO(Commande commande) {
         CommandeResponseDTO responseDTO = new CommandeResponseDTO();
         responseDTO.setId(commande.getId());
         responseDTO.setStatus(commande.getStatus());
-        responseDTO.setIdFournisseur(commande.getIdFournisseur());
-
-        // Récupérer les produits de la commande
-        List<CommandeProduit> commandeProduits = commandeProduitRepository.findByCommandeId(commande.getId());
-
-        List<ProduitDetailDTO> produitDetails = new ArrayList<>();
-        for (CommandeProduit cp : commandeProduits) {
-            try {
-                ProduitDTO produit = restTemplate.getForObject(
-                    produitsServiceUrl + "/api/v1/products/" + cp.getProduitId(),
-                    ProduitDTO.class
-                );
-
-                if (produit != null) {
-                    ProduitDetailDTO detail = new ProduitDetailDTO();
-                    detail.setId(produit.getId());
-                    detail.setNom(produit.getNom());
-                    detail.setPrix(produit.getPrix());
-                    detail.setQuantite(cp.getQuantite());
-                    detail.setUnitPrice(cp.getUnitPrice());
-                    produitDetails.add(detail);
+            responseDTO.setIdFournisseur(commande.getIdFournisseur());
+    
+            // Récupérer les produits de la commande
+            List<CommandeProduit> commandeProduits = commandeProduitRepository.findByCommandeId(commande.getId());
+    
+            List<ProduitDetailDTO> produitDetails = new ArrayList<>();
+            for (CommandeProduit cp : commandeProduits) {
+                try {
+                    ProduitDTO produit = restTemplate.getForObject(
+                        produitsServiceUrl + "/api/v1/products/" + cp.getProduitId(),
+                        ProduitDTO.class
+                    );
+    
+                    if (produit != null) {
+                        ProduitDetailDTO detail = new ProduitDetailDTO();
+                        detail.setId(produit.getId());
+                        detail.setNom(produit.getNom());
+                        detail.setPrix(produit.getPrix());
+                        detail.setQuantite(cp.getQuantite());
+                        detail.setUnitPrice(cp.getUnitPrice());
+                        produitDetails.add(detail);
+                    }
+                } catch (Exception e) {
+                    System.err.println("Erreur lors de la récupération du produit ID "
+                        + cp.getProduitId() + ": " + e.getMessage());
                 }
-            } catch (Exception e) {
-                System.err.println("Erreur lors de la récupération du produit ID "
-                    + cp.getProduitId() + ": " + e.getMessage());
             }
+    
+            responseDTO.setProduits(produitDetails);
+            return responseDTO;
         }
-
-        responseDTO.setProduits(produitDetails);
-        return responseDTO;
-    }
 }

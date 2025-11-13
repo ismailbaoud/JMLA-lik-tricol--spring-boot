@@ -49,4 +49,9 @@ public class CommendeController {
         return commendeServiceImpl.updateCommendeStatus(id, request.getStatus());
     }
 
+    @GetMapping("/calc")
+    public Double calculate() {
+        return commendeServiceImpl.calculate();
+    }
+
 }

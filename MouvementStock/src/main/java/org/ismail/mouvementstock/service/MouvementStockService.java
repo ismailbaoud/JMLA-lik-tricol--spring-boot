@@ -12,6 +12,8 @@ public interface MouvementStockService {
 
     MouvementStockResponseDTO createMouvement(MouvementStockRequestDTO requestDTO);
 
+    MouvementStockResponseDTO getMouvementById(Long id);
+
     Page<MouvementStockResponseDTO> getAllMouvements(Pageable pageable);
 
     List<MouvementStockResponseDTO> getMouvementsByProduitId(Long produitId);

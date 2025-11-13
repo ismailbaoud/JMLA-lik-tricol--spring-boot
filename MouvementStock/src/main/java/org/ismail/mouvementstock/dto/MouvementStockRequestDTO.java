@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.ismail.mouvementstock.model.TypeMouvement;
 
-import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor

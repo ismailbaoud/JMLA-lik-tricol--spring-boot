@@ -22,19 +22,24 @@ Content-Type: application/json
   "idFournisseur": 1,
   "produits": [
     {
-      "produitId": 303,
+      "produitId": 3,
       "quantite": 7
     },
     {
-      "produitId": 352,
+      "produitId": 35,
       "quantite": 7
+    }
+    ,
+    {
+      "produitId": 52,
+      "quantite": 4
     }
   ]
 }
 
 ###
 # Récupérer toutes les commandes avec les détails des produits
-GET http://localhost:8080/api/v1/commandes
+GET http://localhost:8083/api/v1/commandes?size=23&page=0
 
 ###
 # Récupérer une commande par ID avec les détails des produits

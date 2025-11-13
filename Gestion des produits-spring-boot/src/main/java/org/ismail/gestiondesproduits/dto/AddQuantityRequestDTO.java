@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 public class AddQuantityRequestDTO {
     private Integer quantityToAdd;
     private Double prixAchat;
+
 }
 

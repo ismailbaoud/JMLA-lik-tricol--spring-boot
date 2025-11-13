@@ -11,7 +11,7 @@
 2. **Support Multi-Produits** ✓
    - Vous pouvez maintenant créer une commande avec plusieurs produits
    - Utilisation de la table `commande_produit` pour la relation many-to-many
-
+   
 3. **Informations Complètes des Produits** ✓
    - Les réponses retournent maintenant toutes les informations des produits
    - Incluant: id, nom, prix, quantité, et prix unitaire au moment de la commande

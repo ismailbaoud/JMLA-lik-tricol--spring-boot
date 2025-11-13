@@ -28,4 +28,5 @@
      </changeSet>
 
     <include file="db/changelog/001-add-email-column.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/003-add-cin-column.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

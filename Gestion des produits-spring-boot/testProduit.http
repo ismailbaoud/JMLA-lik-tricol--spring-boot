@@ -1,30 +1,30 @@
 ###
-POST http://localhost:8080/api/v1/products
+POST http://localhost:8085/api/v1/products
 Content-Type: application/json
 
 {
-    "name": "ismail12",
-    "description": "Ceci est un produit de test1",
-    "unitPrice": 200,
-    "quantity": 12
+    "name": "ismail123",
+    "description": "Ceci est un produit de test13",
+    "unitPrice": 10,
+    "quantity": 10
 }
 ###
 
-GET http://localhost:8085/api/v1/products
+GET http://localhost:8085/api/v1/products/402
 
 ###
 
-PUT http://localhost:8085/api/v1/products/add-quantity/352
+PUT http://localhost:8085/api/v1/products/add-quantity/402
 Content-Type: application/json
 
 {
     "quantityToAdd" : 5,
-    "prixAchat" : 20.50
+    "prixAchat" : 5
 }
 ###
-PATCH http://localhost:8085/api/v1/products/reduce-quantity/202
+PATCH http://localhost:8085/api/v1/products/reduce-quantity/402
 Content-Type: application/json
 
 {
-    "quantityToReduce" : 3
+    "quantityToReduce" : 5
 }

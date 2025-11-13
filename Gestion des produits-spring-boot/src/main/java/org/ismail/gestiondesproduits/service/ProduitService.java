@@ -24,6 +24,8 @@ public class ProduitService {
                 .baseUrl("http://localhost:8086/api/v1/mouvements")
                 .build();
     }
+
+    
     @Transactional
     public Produit save(Produit p) {
         Produit savedProduit = produitRepository.save(p);
@@ -108,10 +110,10 @@ public class ProduitService {
     
     public Double calculUnitPrice(Produit produit , Double prixAchat, Integer quantityToAdd) {
         
-        Double totalCurrentValue = produit.getUnitPrice() * produit.getQuantity();
-        Double totalNewValue = prixAchat * quantityToAdd;
-        Integer newTotalQuantity = produit.getQuantity() + quantityToAdd;
+        Double totalCurrentValue = produit.getUnitPrice() * produit.getQuantity(); // 10 * 10 = 100
+        Double totalNewValue = prixAchat * quantityToAdd; //5 * 5 = 25
+        Integer newTotalQuantity = produit.getQuantity() + quantityToAdd; //10 + 5 = 15
 
-        return (totalCurrentValue + totalNewValue) / newTotalQuantity;
+        return (totalCurrentValue + totalNewValue) / newTotalQuantity; //(100 + 25 / 15) 125/15 = 8.5
     }
 }

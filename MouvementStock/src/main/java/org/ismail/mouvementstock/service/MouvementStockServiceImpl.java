@@ -34,8 +34,7 @@ public class MouvementStockServiceImpl implements MouvementStockService {
         // Vérifier que le produit existe
         ProductDTO product = productClient.getProductById(requestDTO.getProduitId());
         if (product == null) {
-            throw new ResourceNotFoundException("Produit non trouvé avec l'ID: " + requestDTO.getProduitId());
-        }
+            throw new ResourceNotFoundException("Produit non trouvé avec l'ID: " + requestDTO.getProduitId());}
 
         // Valider la quantité selon le type
         validateQuantity(requestDTO, product);
@@ -101,18 +100,13 @@ public class MouvementStockServiceImpl implements MouvementStockService {
         repository.deleteById(id);
     }
 
-    private void validateQuantity(MouvementStockRequestDTO requestDTO, ProductDTO product) {
-        if (requestDTO.getQuantite() == null || requestDTO.getQuantite() <= 0) {
-            throw new IllegalArgumentException("La quantité doit être positive");
-        }
-
-        if (requestDTO.getTypeMvt() == TypeMouvement.SORTIE) {
-            if (requestDTO.getQuantite() > product.getQuantiteStock()) {
-                throw new IllegalArgumentException("Stock insuffisant. Stock actuel: " + product.getQuantiteStock());
-            }
-        }
+    @Override
+    public MouvementStockResponseDTO getMouvementById(Long id) {
+        MouvementStock mouvement = repository.findById(id).orElse(null);
+        return convertToResponseDTO(mouvement);
+        
     }
-
+    
     private Integer calculateNewStock(Integer currentStock, MouvementStockRequestDTO requestDTO) {
         return switch (requestDTO.getTypeMvt()) {
             case ENTREE -> currentStock + requestDTO.getQuantite();
@@ -120,7 +114,7 @@ public class MouvementStockServiceImpl implements MouvementStockService {
             case AJUSTEMENT -> requestDTO.getQuantite();
         };
     }
-
+    
     private Integer restoreStock(Integer currentStock, MouvementStock mouvement) {
         return switch (mouvement.getTypeMvt()) {
             case ENTREE -> currentStock - mouvement.getQuantite();
@@ -140,4 +134,17 @@ public class MouvementStockServiceImpl implements MouvementStockService {
         dto.setRefCommande(mouvement.getRefCommande());
         return dto;
     }
+
+    private void validateQuantity(MouvementStockRequestDTO requestDTO, ProductDTO product) {
+        if (requestDTO.getQuantite() == null || requestDTO.getQuantite() <= 0) {
+            throw new IllegalArgumentException("La quantité doit être positive");
+        }
+    
+        if (requestDTO.getTypeMvt() == TypeMouvement.SORTIE) {
+            if (requestDTO.getQuantite() > product.getQuantiteStock()) {
+                throw new IllegalArgumentException("Stock insuffisant. Stock actuel: " + product.getQuantiteStock());
+            }
+        }
+    }
+    
 }
